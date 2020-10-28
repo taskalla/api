@@ -5,26 +5,17 @@ import (
 	"strconv"
 
 	"github.com/taskalla/api/pkg/env"
+	"github.com/taskalla/api/pkg/schema"
 
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
 	"github.com/taskalla/api/pkg/logging"
-	"github.com/taskalla/api/pkg/models/item"
 )
 
 func main() {
-	rootQuery := graphql.NewObject(graphql.ObjectConfig{
-		Name: "Query",
-		Fields: graphql.Fields{
-			"items": &graphql.Field{
-				Type:    graphql.NewList(item.ItemObj),
-				Resolve: item.ItemResolver,
-			},
-		},
-	})
-
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
-		Query: rootQuery,
+		Query:    schema.RootQuery,
+		Mutation: schema.RootMutation,
 	})
 
 	if err != nil {
