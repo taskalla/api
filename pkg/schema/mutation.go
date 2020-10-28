@@ -17,7 +17,7 @@ var RootMutation = graphql.NewObject(graphql.ObjectConfig{
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				return item.Item{
-					Title: p.Args["item"].(map[string]string)["title"],
+					Title: p.Args["item"].(map[string]interface{})["title"].(string),
 				}, nil
 			},
 		},

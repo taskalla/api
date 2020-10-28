@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/taskalla/api/pkg/db"
 	"github.com/taskalla/api/pkg/env"
 	"github.com/taskalla/api/pkg/schema"
 
@@ -13,6 +14,8 @@ import (
 )
 
 func main() {
+	db.Connect()
+
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
 		Query:    schema.RootQuery,
 		Mutation: schema.RootMutation,
@@ -29,6 +32,8 @@ func main() {
 	})
 
 	http.Handle("/graphql", h)
+
+	logging.Info("Starting up...")
 
 	err = http.ListenAndServe(":"+strconv.Itoa(env.Int("PORT", 3000)), nil)
 	if err != nil {
