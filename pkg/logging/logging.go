@@ -21,3 +21,7 @@ func Log(msg interface{}, level LogLevel) {
 func Info(msg interface{}) {
 	Log(msg, LogLevelInfo)
 }
+
+func Critical(msg interface{}) {
+	Log(msg, LogLevelCritical)
+}

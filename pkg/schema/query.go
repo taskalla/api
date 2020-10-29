@@ -20,6 +20,9 @@ var RootQuery = graphql.NewObject(graphql.ObjectConfig{
 				},
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				rootObject := p.Info.RootValue.(map[string]interface{})
+				rootObject["item_id"] = p.Args["title"]
+
 				return item.Item{
 					Title:       p.Args["title"].(string),
 					Description: "test",

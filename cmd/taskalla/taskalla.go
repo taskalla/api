@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
@@ -29,6 +30,9 @@ func main() {
 	h := handler.New(&handler.Config{
 		Playground: true,
 		Schema:     &schema,
+		RootObjectFn: func(ctx context.Context, r *http.Request) map[string]interface{} {
+			return map[string]interface{}{}
+		},
 	})
 
 	http.Handle("/graphql", h)

@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/Matt-Gleich/logoru"
 	"github.com/jackc/pgx"
+	"github.com/taskalla/api/pkg/logging"
 )
 
 func Connect() {
@@ -14,8 +15,8 @@ func Connect() {
 		Password: "password",
 	})
 	if err != nil {
-		logoru.Critical(err)
+		logging.Critical("Error connecting to database: " + err.Error())
 	} else {
-		logoru.Success("success!")
+		logoru.Success("Successful database connection!")
 	}
 }
