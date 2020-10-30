@@ -1,12 +1,14 @@
 CREATE TABLE IF NOT EXISTS items (
     title varchar,
-    description varchar
+    item_description varchar,
+    parent_user varchar,
+    id varchar PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS users (
     email varchar,
     password_hash varchar,
-    id integer PRIMARY KEY,
+    id varchar PRIMARY KEY,
     name varchar
 );
 
@@ -18,5 +20,5 @@ CREATE TABLE IF NOT EXISTS tokens (
     valid boolean,
     created_on timestamp,
     token_type token_type,
-    user varchar
+    parent_user varchar
 );

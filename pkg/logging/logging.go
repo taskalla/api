@@ -7,6 +7,7 @@ type LogLevel string
 const (
 	LogLevelCritical LogLevel = "critical"
 	LogLevelInfo     LogLevel = "info"
+	LogLevelError    LogLevel = "error"
 )
 
 func Log(msg interface{}, level LogLevel) {
@@ -15,6 +16,8 @@ func Log(msg interface{}, level LogLevel) {
 		logoru.Critical(msg)
 	case LogLevelInfo:
 		logoru.Info(msg)
+	case LogLevelError:
+		logoru.Error(msg)
 	}
 }
 
@@ -24,4 +27,8 @@ func Info(msg interface{}) {
 
 func Critical(msg interface{}) {
 	Log(msg, LogLevelCritical)
+}
+
+func Error(msg interface{}) {
+	Log(msg, LogLevelError)
 }

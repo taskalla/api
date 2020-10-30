@@ -11,7 +11,7 @@ type User struct {
 	Name         string
 }
 
-var userObj = graphql.NewObject(graphql.ObjectConfig{
+var UserObj = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
 	Fields: graphql.Fields{
 		"email": &graphql.Field{

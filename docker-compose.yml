@@ -10,7 +10,7 @@ services:
       - "3000:3000"
     environment:
       PORT: "3000"
-      DB: "postgres://postgres:password@db:5432"
+      DB: "postgres://postgres:password@db:5432/taskalla"
   db:
     image: postgres
     volumes:
@@ -19,12 +19,13 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: taskalla
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: taskalla@example.com
-      PGADMIN_DEFAULT_PASSWORD: password
+  pgweb:
+    image: sosedoff/pgweb
     ports:
-      - "3001:80"
+      - "3001:8081"
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/taskalla?sslmode=disable
+    depends_on:
+      - db
 volumes:
   db_volume:
