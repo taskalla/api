@@ -17,6 +17,7 @@ type Token struct {
 	Valid     bool      `graphql:"valid"`
 	CreatedOn time.Time `graphql:"created_on"`
 	TokenType string    `graphql:"type"`
+	User      string    `graphql:"user"`
 }
 
 var TokenTypeObj = graphql.NewEnum(graphql.EnumConfig{
@@ -39,6 +40,9 @@ var TokenObj = graphql.NewObject(graphql.ObjectConfig{
 		},
 		"type": &graphql.Field{
 			Type: TokenTypeObj,
+		},
+		"user": &graphql.Field{
+			Type: graphql.String,
 		},
 	},
 })

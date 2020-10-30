@@ -17,5 +17,6 @@ CREATE TABLE IF NOT EXISTS tokens (
     token varchar,
     valid boolean,
     created_on timestamp,
-    token_type token_type
+    token_type token_type,
+    user varchar
 );
