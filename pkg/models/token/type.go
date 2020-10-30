@@ -6,11 +6,9 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-type TokenType string
-
 const (
-	TokenTypeOAuth  TokenType = "oauth"
-	TokenTypeClient TokenType = "client"
+	TokenTypeOAuth  = "oauth"
+	TokenTypeClient = "client"
 )
 
 type Token struct {
@@ -18,10 +16,11 @@ type Token struct {
 	Scopes    []string  `graphql:"scopes"`
 	Valid     bool      `graphql:"valid"`
 	CreatedOn time.Time `graphql:"created_on"`
-	TokenType TokenType `graphql:"token_type"`
+	TokenType string    `graphql:"type"`
 }
 
 var TokenTypeObj = graphql.NewEnum(graphql.EnumConfig{
+	Name: "TokenType",
 	Values: graphql.EnumValueConfigMap{
 		"oauth": &graphql.EnumValueConfig{
 			Value: "oauth",
