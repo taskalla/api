@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	Email        string
-	PasswordHash string
+	PasswordHash string `graphql:"password_hash"`
 	ID           int
 	Name         string
 }
