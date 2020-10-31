@@ -16,10 +16,10 @@ CREATE TYPE token_type AS ENUM ('oauth', 'client');
 
 CREATE TABLE IF NOT EXISTS tokens (
     id varchar PRIMARY KEY,
-    token varchar,
+    token varchar NOT NULL UNIQUE,
     scopes varchar[],
-    valid boolean,
+    valid boolean DEFAULT TRUE,
     created_on timestamp,
-    token_type token_type,
+    token_type token_type NOT NULL,
     user_id varchar REFERENCES users (id) NOT NULL
 );

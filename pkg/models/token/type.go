@@ -12,6 +12,7 @@ const (
 )
 
 type Token struct {
+	ID        string    `graphql:"id"`
 	Token     string    `graphql:"token"`
 	Scopes    []string  `graphql:"scopes"`
 	Valid     bool      `graphql:"valid"`
@@ -35,6 +36,9 @@ var TokenTypeObj = graphql.NewEnum(graphql.EnumConfig{
 var TokenObj = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Token",
 	Fields: graphql.Fields{
+		"id": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
 		"token": &graphql.Field{
 			Type: graphql.String,
 		},
