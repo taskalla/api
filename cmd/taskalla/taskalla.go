@@ -1,12 +1,12 @@
 package main
 
 import (
-	"context"
 	"net/http"
 	"strconv"
 
 	"github.com/taskalla/api/pkg/db"
 	"github.com/taskalla/api/pkg/env"
+	"github.com/taskalla/api/pkg/root_object"
 	"github.com/taskalla/api/pkg/schema"
 
 	"github.com/graphql-go/graphql"
@@ -28,11 +28,9 @@ func main() {
 	}
 
 	h := handler.New(&handler.Config{
-		Playground: true,
-		Schema:     &schema,
-		RootObjectFn: func(ctx context.Context, r *http.Request) map[string]interface{} {
-			return map[string]interface{}{}
-		},
+		Playground:   true,
+		Schema:       &schema,
+		RootObjectFn: root_object.ResolveRootObject,
 	})
 
 	http.Handle("/graphql", h)

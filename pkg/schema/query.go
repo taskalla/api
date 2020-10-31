@@ -2,31 +2,17 @@ package schema
 
 import (
 	"github.com/graphql-go/graphql"
-	"github.com/taskalla/api/pkg/models/item"
+	"github.com/taskalla/api/pkg/models/user"
 )
 
 var RootQuery = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Query",
 	Fields: graphql.Fields{
-		"items": &graphql.Field{
-			Type:    graphql.NewList(item.ItemObj),
-			Resolve: item.ItemResolver,
-		},
-		"item": &graphql.Field{
-			Type: item.ItemObj,
-			Args: graphql.FieldConfigArgument{
-				"title": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-			},
+		"viewer": &graphql.Field{
+			Type: user.UserObj,
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				rootObject := p.Info.RootValue.(map[string]interface{})
-				rootObject["item_id"] = p.Args["title"]
-
-				return item.Item{
-					Title:       p.Args["title"].(string),
-					Description: "test",
-				}, nil
+				// TODO
+				return nil, nil
 			},
 		},
 	},
