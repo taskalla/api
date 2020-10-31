@@ -12,13 +12,14 @@ const (
 )
 
 type Token struct {
-	ID        string    `graphql:"id"`
-	Token     string    `graphql:"token"`
-	Scopes    []string  `graphql:"scopes"`
-	Valid     bool      `graphql:"valid"`
-	CreatedOn time.Time `graphql:"created_on"`
-	TokenType string    `graphql:"type"`
-	User      string    `graphql:"user"`
+	ID         string    `graphql:"id"`
+	Token      string    `graphql:"token"`
+	Scopes     []string  `graphql:"scopes"`
+	Valid      bool      `graphql:"valid"`
+	CreatedOn  time.Time `graphql:"created_on"`
+	TokenType  string    `graphql:"type"`
+	User       string    `graphql:"user"`
+	ClientType string    `graphql:"client_type"`
 }
 
 var TokenTypeObj = graphql.NewEnum(graphql.EnumConfig{
@@ -29,6 +30,18 @@ var TokenTypeObj = graphql.NewEnum(graphql.EnumConfig{
 		},
 		"client": &graphql.EnumValueConfig{
 			Value: "client",
+		},
+	},
+})
+
+var ClientType = graphql.NewEnum(graphql.EnumConfig{
+	Name: "ClientType",
+	Values: graphql.EnumValueConfigMap{
+		"mobile": &graphql.EnumValueConfig{
+			Value: "mobile",
+		},
+		"web": &graphql.EnumValueConfig{
+			Value: "web",
 		},
 	},
 })
@@ -47,6 +60,9 @@ var TokenObj = graphql.NewObject(graphql.ObjectConfig{
 		},
 		"user": &graphql.Field{
 			Type: graphql.String,
+		},
+		"client_type": &graphql.Field{
+			Type: ClientType,
 		},
 	},
 })

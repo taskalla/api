@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS items (
 );
 
 CREATE TYPE token_type AS ENUM ('oauth', 'client');
+CREATE TYPE client_type AS ENUM ('mobile', 'web');
 
 CREATE TABLE IF NOT EXISTS tokens (
     id varchar PRIMARY KEY,
@@ -21,5 +22,12 @@ CREATE TABLE IF NOT EXISTS tokens (
     valid boolean DEFAULT TRUE,
     created_on timestamp,
     token_type token_type NOT NULL,
-    user_id varchar REFERENCES users (id) NOT NULL
+    user_id varchar REFERENCES users (id) NOT NULL,
+    client_type client_type CHECK (
+        CASE
+            WHEN (token_type = 'client' AND client_type IS NOT NULL) THEN TRUE
+            WHEN (token_type = 'oauth' AND client_type IS NULL) THEN TRUE
+            ELSE FALSE
+        END
+    )
 );
