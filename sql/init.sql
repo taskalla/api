@@ -1,24 +1,25 @@
-CREATE TABLE IF NOT EXISTS items (
-    title varchar,
-    item_description varchar,
-    parent_user varchar,
-    id varchar PRIMARY KEY
+CREATE TABLE IF NOT EXISTS users (
+    id varchar PRIMARY KEY,
+    email varchar UNIQUE,
+    password_hash varchar,
+    name varchar
 );
 
-CREATE TABLE IF NOT EXISTS users (
-    email varchar,
-    password_hash varchar,
+CREATE TABLE IF NOT EXISTS items (
     id varchar PRIMARY KEY,
-    name varchar
+    title varchar,
+    item_description varchar,
+    user_id varchar REFERENCES users (id) NOT NULL
 );
 
 CREATE TYPE token_type AS ENUM ('oauth', 'client');
 
 CREATE TABLE IF NOT EXISTS tokens (
-    scopes varchar[],
+    id varchar PRIMARY KEY,
     token varchar,
+    scopes varchar[],
     valid boolean,
     created_on timestamp,
     token_type token_type,
-    parent_user varchar
+    user_id varchar REFERENCES users (id) NOT NULL
 );

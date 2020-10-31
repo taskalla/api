@@ -24,11 +24,6 @@ var ItemObj = graphql.NewObject(graphql.ObjectConfig{
 		"description": &graphql.Field{
 			Type:        graphql.String,
 			Description: "The item's description",
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				rootObject := p.Info.RootValue.(map[string]interface{})
-
-				return rootObject["item_id"], nil
-			},
 		},
 	},
 })
