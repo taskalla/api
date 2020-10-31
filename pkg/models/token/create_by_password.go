@@ -28,7 +28,7 @@ var CreateByPassword = &graphql.Field{
 			return nil, errors.New("Incorrect password")
 		}
 
-		token, err := CreateClientToken(db_user.ID)
+		token, err := CreateClientToken(db_user.ID, input["client_type"].(string))
 		if err != nil {
 			return nil, err
 		}
@@ -45,6 +45,9 @@ var CreateByPasswordInput = graphql.NewInputObject(graphql.InputObjectConfig{
 		},
 		"password": &graphql.InputObjectFieldConfig{
 			Type: graphql.NewNonNull(graphql.String),
+		},
+		"client_type": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(ClientType),
 		},
 	},
 })

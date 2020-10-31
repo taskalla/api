@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS items (
 );
 
 CREATE TYPE token_type AS ENUM ('oauth', 'client');
-CREATE TYPE client_type AS ENUM ('mobile', 'web');
+CREATE TYPE client_type AS ENUM ('mobile', 'web', 'personal');
 
 CREATE TABLE IF NOT EXISTS tokens (
     id varchar PRIMARY KEY,

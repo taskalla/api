@@ -11,6 +11,12 @@ const (
 	TokenTypeClient = "client"
 )
 
+const (
+	ClientTypeWeb      = "web"
+	ClientTypeMobile   = "mobile"
+	ClientTypePersonal = "personal"
+)
+
 type Token struct {
 	ID         string    `graphql:"id"`
 	Token      string    `graphql:"token"`
@@ -42,6 +48,10 @@ var ClientType = graphql.NewEnum(graphql.EnumConfig{
 		},
 		"web": &graphql.EnumValueConfig{
 			Value: "web",
+		},
+		"personal": &graphql.EnumValueConfig{
+			Value:       "personal",
+			Description: "A personal token",
 		},
 	},
 })

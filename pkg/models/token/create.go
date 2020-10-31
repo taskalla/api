@@ -8,13 +8,13 @@ import (
 	"github.com/taskalla/api/pkg/utils"
 )
 
-func CreateClientToken(user string) (*Token, error) {
+func CreateClientToken(user, client_type string) (*Token, error) {
 	id := utils.GenerateUUID()
 	createdOn := time.Now()
 
 	token := utils.GenerateToken()
 
-	_, err := db.DB.Exec(context.Background(), "INSERT INTO tokens (id, token, created_on, token_type, user_id) VALUES ($1, $2, $3, 'client', $4)", id, token, createdOn, user)
+	_, err := db.DB.Exec(context.Background(), "INSERT INTO tokens (id, token, created_on, token_type, user_id, client_type) VALUES ($1, $2, $3, 'client', $4, $5)", id, token, createdOn, user, client_type)
 	if err != nil {
 		return &Token{}, err
 	}
