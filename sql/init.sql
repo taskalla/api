@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS items (
     id varchar PRIMARY KEY,
     title varchar,
-    item_description varchar,
+    item_description varchar NOT NULL,
     user_id varchar REFERENCES users (id) NOT NULL
 );
 

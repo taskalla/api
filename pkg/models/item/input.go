@@ -8,5 +8,8 @@ var ItemInput = graphql.NewInputObject(graphql.InputObjectConfig{
 		"title": &graphql.InputObjectFieldConfig{
 			Type: graphql.String,
 		},
+		"description": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.String),
+		},
 	},
 })
