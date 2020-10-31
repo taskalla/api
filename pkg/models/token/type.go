@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/graphql-go/graphql"
+	"github.com/taskalla/api/pkg/models/user"
 )
 
 const (
@@ -24,7 +25,7 @@ type Token struct {
 	Valid      bool      `graphql:"valid"`
 	CreatedOn  time.Time `graphql:"created_on"`
 	TokenType  string    `graphql:"type"`
-	User       string    `graphql:"user"`
+	UserID     string    `graphql:"user_id"`
 	ClientType string    `graphql:"client_type"`
 }
 
@@ -69,7 +70,17 @@ var TokenObj = graphql.NewObject(graphql.ObjectConfig{
 			Type: TokenTypeObj,
 		},
 		"user": &graphql.Field{
-			Type: graphql.String,
+			Type: user.UserObj,
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				source := p.Source.(*Token)
+
+				db_user, err := user.GetUserById(source.UserID)
+				if err != nil {
+					return &user.User{}, err
+				}
+
+				return db_user, nil
+			},
 		},
 		"client_type": &graphql.Field{
 			Type: ClientType,

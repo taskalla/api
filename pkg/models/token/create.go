@@ -20,11 +20,12 @@ func CreateClientToken(user, client_type string) (*Token, error) {
 	}
 
 	return &Token{
-		ID:        id,
-		User:      user,
-		TokenType: TokenTypeClient,
-		Valid:     true,
-		CreatedOn: createdOn,
-		Token:     token,
+		ID:         id,
+		UserID:     user,
+		TokenType:  TokenTypeClient,
+		Valid:      true,
+		CreatedOn:  createdOn,
+		Token:      token,
+		ClientType: client_type,
 	}, nil
 }
