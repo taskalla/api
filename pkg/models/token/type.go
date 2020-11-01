@@ -54,6 +54,9 @@ var ClientType = graphql.NewEnum(graphql.EnumConfig{
 			Value:       "personal",
 			Description: "A personal token",
 		},
+		"other": &graphql.EnumValueConfig{
+			Value: "other",
+		},
 	},
 })
 

@@ -47,7 +47,8 @@ var CreateByPasswordInput = graphql.NewInputObject(graphql.InputObjectConfig{
 			Type: graphql.NewNonNull(graphql.String),
 		},
 		"client_type": &graphql.InputObjectFieldConfig{
-			Type: graphql.NewNonNull(ClientType),
+			Type:         ClientType,
+			DefaultValue: "other",
 		},
 	},
 })
