@@ -16,6 +16,7 @@ const (
 	ClientTypeWeb      = "web"
 	ClientTypeMobile   = "mobile"
 	ClientTypePersonal = "personal"
+	ClientTypeOther    = "other"
 )
 
 type Token struct {
