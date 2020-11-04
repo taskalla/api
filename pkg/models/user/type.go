@@ -1,8 +1,6 @@
 package user
 
 import (
-	"strconv"
-
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/models/item"
 )
@@ -40,17 +38,13 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 				},
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				// TODO: get user ID attached to token
+
 				return item.ItemsConnection{
 					Number:      10,
 					TotalNumber: 10,
-					FetchFunc: func() ([]item.Item, error) {
-						return []item.Item{
-							{
-								Title:       strconv.Itoa(p.Args["number"].(int)),
-								Description: "cool description",
-								ID:          "cool ID",
-							},
-						}, nil
+					FetchFunc: func() ([]*item.Item, error) {
+						return item.GetUserItems("TODO!", p.Args["number"].(int), p.Args["page"].(int))
 					},
 				}, nil
 			},

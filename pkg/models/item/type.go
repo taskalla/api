@@ -33,7 +33,7 @@ type ItemsConnection struct {
 	Nodes       []Item `graphql:"nodes"`
 	Number      int    `graphql:"number"`
 	TotalNumber int    `graphql:"total_number"`
-	FetchFunc   func() ([]Item, error)
+	FetchFunc   func() ([]*Item, error)
 }
 
 var ItemsConnectionObj = graphql.NewObject(graphql.ObjectConfig{
