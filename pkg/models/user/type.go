@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/models/item"
+	"github.com/taskalla/api/pkg/tokenutils"
 )
 
 type User struct {
@@ -27,7 +28,7 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 		"items": &graphql.Field{
 			Type: graphql.NewNonNull(item.ItemsConnectionObj),
 			Args: graphql.FieldConfigArgument{
-				"number": &graphql.ArgumentConfig{
+				"count": &graphql.ArgumentConfig{
 					Description: "The number of items to fetch per page",
 					Type:        graphql.NewNonNull(graphql.Int),
 				},
@@ -38,13 +39,16 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 				},
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				// TODO: get user ID attached to token
+				t, err := tokenutils.ExtractToken(p)
+				if err != nil {
+					return nil, err
+				}
 
 				return item.ItemsConnection{
-					Number:      10,
-					TotalNumber: 10,
+					Count:      10,
+					TotalCount: 10,
 					FetchFunc: func() ([]*item.Item, error) {
-						return item.GetUserItems("TODO!", p.Args["number"].(int), p.Args["page"].(int))
+						return item.GetUserItems(t.UserID, p.Args["count"].(int), p.Args["page"].(int))
 					},
 				}, nil
 			},

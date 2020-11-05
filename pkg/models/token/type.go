@@ -1,34 +1,10 @@
 package token
 
 import (
-	"time"
-
 	"github.com/graphql-go/graphql"
+	"github.com/taskalla/api/pkg/models/token/token_struct"
 	"github.com/taskalla/api/pkg/models/user"
 )
-
-const (
-	TokenTypeOAuth  = "oauth"
-	TokenTypeClient = "client"
-)
-
-const (
-	ClientTypeWeb      = "web"
-	ClientTypeMobile   = "mobile"
-	ClientTypePersonal = "personal"
-	ClientTypeOther    = "other"
-)
-
-type Token struct {
-	ID         string    `graphql:"id"`
-	Token      string    `graphql:"token"`
-	Scopes     []string  `graphql:"scopes"`
-	Valid      bool      `graphql:"valid"`
-	CreatedOn  time.Time `graphql:"created_on"`
-	TokenType  string    `graphql:"type"`
-	UserID     string    `graphql:"user_id"`
-	ClientType string    `graphql:"client_type"`
-}
 
 var TokenTypeObj = graphql.NewEnum(graphql.EnumConfig{
 	Name: "TokenType",
@@ -76,7 +52,7 @@ var TokenObj = graphql.NewObject(graphql.ObjectConfig{
 		"user": &graphql.Field{
 			Type: user.UserObj,
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				source := p.Source.(*Token)
+				source := p.Source.(*token_struct.Token)
 
 				db_user, err := user.GetUserById(source.UserID)
 				if err != nil {

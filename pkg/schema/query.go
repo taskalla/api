@@ -4,8 +4,8 @@ import (
 	"errors"
 
 	"github.com/graphql-go/graphql"
-	"github.com/taskalla/api/pkg/models/token"
 	"github.com/taskalla/api/pkg/models/user"
+	"github.com/taskalla/api/pkg/tokenutils"
 )
 
 var RootQuery = graphql.NewObject(graphql.ObjectConfig{
@@ -14,13 +14,12 @@ var RootQuery = graphql.NewObject(graphql.ObjectConfig{
 		"viewer": &graphql.Field{
 			Type: user.UserObj,
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				root := p.Info.RootValue.(map[string]interface{})
-				token, ok := root["token"].(*token.Token)
-				if !ok || token == nil {
-					return nil, errors.New("invalid auth")
+				t, err := tokenutils.ExtractToken(p)
+				if err != nil {
+					return nil, err
 				}
 
-				db_user, err := user.GetUserById(token.UserID)
+				db_user, err := user.GetUserById(t.UserID)
 				if err != nil {
 					return nil, errors.New("invalid auth")
 				}

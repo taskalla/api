@@ -30,10 +30,10 @@ var ItemObj = graphql.NewObject(graphql.ObjectConfig{
 })
 
 type ItemsConnection struct {
-	Nodes       []Item `graphql:"nodes"`
-	Number      int    `graphql:"number"`
-	TotalNumber int    `graphql:"total_number"`
-	FetchFunc   func() ([]*Item, error)
+	Nodes      []Item `graphql:"nodes"`
+	Count      int    `graphql:"count"`
+	TotalCount int    `graphql:"total_count"`
+	FetchFunc  func() ([]*Item, error)
 }
 
 var ItemsConnectionObj = graphql.NewObject(graphql.ObjectConfig{
@@ -49,11 +49,11 @@ var ItemsConnectionObj = graphql.NewObject(graphql.ObjectConfig{
 				return source.FetchFunc()
 			},
 		},
-		"number": &graphql.Field{
+		"count": &graphql.Field{
 			Type:        graphql.NewNonNull(graphql.Int),
 			Description: "The number of nodes on this page",
 		},
-		"total_number": &graphql.Field{
+		"total_count": &graphql.Field{
 			Type:        graphql.NewNonNull(graphql.Int),
 			Description: "The total number of items in the result set",
 		},
