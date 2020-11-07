@@ -37,6 +37,9 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 					Type:         graphql.Int,
 					DefaultValue: 1,
 				},
+				"filter": &graphql.ArgumentConfig{
+					Type: item.ItemFilterObj,
+				},
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				t, err := tokenutils.ExtractToken(p)
@@ -54,11 +57,19 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 					return nil, err
 				}
 
+				filter, filter_ok := p.Args["filter"].(map[string]interface{})
+
 				return item.ItemsConnection{
 					Count:      count,
 					TotalCount: total_count,
 					FetchFunc: func() ([]*item.Item, error) {
-						return item.GetUserItems(t.UserID, p.Args["count"].(int), p.Args["page"].(int))
+						filter_obj := item.ItemFilter{}
+						if filter_ok {
+							if filter_done, ok := filter["done"].(bool); ok {
+								filter_obj.Done = &filter_done
+							}
+						}
+						return item.GetUserItems(t.UserID, p.Args["count"].(int), p.Args["page"].(int), filter_obj)
 					},
 				}, nil
 			},

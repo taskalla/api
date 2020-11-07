@@ -6,8 +6,8 @@ import (
 	"github.com/taskalla/api/pkg/db"
 )
 
-func GetUserItems(user string, count, page int) ([]*Item, error) {
-	rows, err := db.DB.Query(context.Background(), "SELECT id, item_description, user_id, done FROM items WHERE user_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3", user, count, (page-1)*count)
+func GetUserItems(user string, count, page int, filter ItemFilter) ([]*Item, error) {
+	rows, err := db.DB.Query(context.Background(), "SELECT id, item_description, user_id, done FROM items WHERE user_id = $1 AND done = coalesce($2, done) ORDER BY id ASC LIMIT $3 OFFSET $4", user, filter.Done, count, (page-1)*count)
 	if err != nil {
 		return nil, err
 	}
