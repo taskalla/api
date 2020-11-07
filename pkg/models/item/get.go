@@ -7,7 +7,7 @@ import (
 )
 
 func GetUserItems(user string, count, page int) ([]*Item, error) {
-	rows, err := db.DB.Query(context.Background(), "SELECT id, item_description, user_id FROM items WHERE user_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3", user, count, (page-1)*count)
+	rows, err := db.DB.Query(context.Background(), "SELECT id, item_description, user_id, done FROM items WHERE user_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3", user, count, (page-1)*count)
 	if err != nil {
 		return nil, err
 	}
@@ -16,7 +16,7 @@ func GetUserItems(user string, count, page int) ([]*Item, error) {
 
 	for rows.Next() {
 		item := &Item{}
-		err := rows.Scan(&item.ID, &item.Description, &item.UserID)
+		err := rows.Scan(&item.ID, &item.Description, &item.UserID, &item.Done)
 		if err != nil {
 			return nil, err
 		}

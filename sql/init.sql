@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS items (
     id varchar PRIMARY KEY,
     item_description varchar NOT NULL,
-    user_id varchar REFERENCES users (id) NOT NULL
+    user_id varchar REFERENCES users (id) NOT NULL,
+    done boolean NOT NULL DEFAULT FALSE
 );
 
 CREATE TYPE token_type AS ENUM ('oauth', 'client');

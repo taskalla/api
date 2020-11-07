@@ -8,6 +8,7 @@ type Item struct {
 	Description string `graphql:"description"`
 	ID          string `graphql:"id"`
 	UserID      string `graphql:"user_id"`
+	Done        bool   `graphql:"done"`
 }
 
 var ItemObj = graphql.NewObject(graphql.ObjectConfig{
@@ -20,6 +21,9 @@ var ItemObj = graphql.NewObject(graphql.ObjectConfig{
 		"description": &graphql.Field{
 			Type:        graphql.NewNonNull(graphql.String),
 			Description: "The item's description",
+		},
+		"done": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.Boolean),
 		},
 	},
 })
