@@ -47,28 +47,28 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 					return nil, err
 				}
 
-				count, err := item.GetItemCountOnPage(t.UserID, p.Args["count"].(int), p.Args["page"].(int))
-				if err != nil {
-					return nil, err
-				}
-
-				total_count, err := item.GetTotalItemCount(t.UserID)
-				if err != nil {
-					return nil, err
-				}
-
 				filter, filter_ok := p.Args["filter"].(map[string]interface{})
+				filter_obj := item.ItemFilter{}
+				if filter_ok {
+					if filter_done, ok := filter["done"].(bool); ok {
+						filter_obj.Done = &filter_done
+					}
+				}
+
+				count, err := item.GetItemCountOnPage(t.UserID, p.Args["count"].(int), p.Args["page"].(int), filter_obj)
+				if err != nil {
+					return nil, err
+				}
+
+				total_count, err := item.GetTotalItemCount(t.UserID, filter_obj)
+				if err != nil {
+					return nil, err
+				}
 
 				return item.ItemsConnection{
 					Count:      count,
 					TotalCount: total_count,
 					FetchFunc: func() ([]*item.Item, error) {
-						filter_obj := item.ItemFilter{}
-						if filter_ok {
-							if filter_done, ok := filter["done"].(bool); ok {
-								filter_obj.Done = &filter_done
-							}
-						}
 						return item.GetUserItems(t.UserID, p.Args["count"].(int), p.Args["page"].(int), filter_obj)
 					},
 				}, nil
