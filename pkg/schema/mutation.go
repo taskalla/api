@@ -13,5 +13,6 @@ var RootMutation = graphql.NewObject(graphql.ObjectConfig{
 		"createTokenByPassword": token.CreateByPassword,
 		"createUser":            user.CreateUserMutation,
 		"createItem":            item.CreateItemMutation,
+		"updateItem":            item.UpdateItemMutation,
 	},
 })
