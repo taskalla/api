@@ -1,3 +1,5 @@
+# This file is intended for development, and not for use in production.
+
 version: "3"
 services:
   main:

@@ -44,9 +44,19 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 					return nil, err
 				}
 
+				count, err := item.GetItemCountOnPage(t.UserID, p.Args["count"].(int), p.Args["page"].(int))
+				if err != nil {
+					return nil, err
+				}
+
+				total_count, err := item.GetTotalItemCount(t.UserID)
+				if err != nil {
+					return nil, err
+				}
+
 				return item.ItemsConnection{
-					Count:      10,
-					TotalCount: 10,
+					Count:      count,
+					TotalCount: total_count,
 					FetchFunc: func() ([]*item.Item, error) {
 						return item.GetUserItems(t.UserID, p.Args["count"].(int), p.Args["page"].(int))
 					},

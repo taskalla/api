@@ -18,7 +18,7 @@ var CreateItemMutation = &graphql.Field{
 		}
 
 		return Item{
-			Title: t.UserID,
+			Description: t.UserID,
 		}, nil
 	},
 }
