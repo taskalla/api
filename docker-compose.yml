@@ -13,6 +13,7 @@ services:
     environment:
       PORT: "3000"
       DB: "postgres://postgres:password@db:5432/taskalla"
+    env_file: .env
   db:
     image: postgres
     volumes:
