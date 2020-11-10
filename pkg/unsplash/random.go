@@ -24,7 +24,7 @@ func RandomImage(p graphql.ResolveParams) (interface{}, error) {
 		Path:   "/photos/random",
 		RawQuery: url.Values{
 			//"content_filter": {"high"},
-			"query":       {"space"},
+			"collections": {"1026767"},
 			"orientation": {"landscape"},
 		}.Encode(),
 	}
