@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"os"
+	"time"
 
 	"github.com/Matt-Gleich/logoru"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -12,7 +13,10 @@ import (
 var DB *pgxpool.Pool
 
 func Connect() {
-	conn, err := pgxpool.Connect(context.Background(), os.Getenv("DB"))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	conn, err := pgxpool.Connect(ctx, os.Getenv("DB"))
 
 	if err != nil {
 		logging.Critical("Error connecting to database: " + err.Error())
