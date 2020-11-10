@@ -14,6 +14,15 @@ import (
 	"github.com/taskalla/api/pkg/logging"
 )
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3002")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	db.Connect()
 
@@ -33,7 +42,7 @@ func main() {
 		RootObjectFn: root_object.ResolveRootObject,
 	})
 
-	http.Handle("/graphql", h)
+	http.Handle("/graphql", corsMiddleware(h))
 
 	logging.Info("Starting up...")
 

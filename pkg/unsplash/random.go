@@ -23,9 +23,9 @@ func RandomImage(p graphql.ResolveParams) (interface{}, error) {
 		Host:   "api.unsplash.com",
 		Path:   "/photos/random",
 		RawQuery: url.Values{
-			"content_filter": {"high"},
-			"query":          {"space"},
-			"orientation":    {"landscape"},
+			//"content_filter": {"high"},
+			"query":       {"space"},
+			"orientation": {"landscape"},
 		}.Encode(),
 	}
 
@@ -53,6 +53,7 @@ func RandomImage(p graphql.ResolveParams) (interface{}, error) {
 
 	var parsedBody struct {
 		URLs struct {
+			Full    string `json:"full"`
 			Regular string `json:"regular"`
 		} `json:"urls"`
 		BlurHash string `json:"blur_hash"`
@@ -73,9 +74,11 @@ func RandomImage(p graphql.ResolveParams) (interface{}, error) {
 	}
 
 	return map[string]interface{}{
-		"url":      parsedBody.URLs.Regular,
-		"meta_url": parsedBody.Links.HTML,
-		"blurhash": parsedBody.BlurHash,
+		"url":         parsedBody.URLs.Full,
+		"url_full":    parsedBody.URLs.Full,
+		"url_regular": parsedBody.URLs.Regular,
+		"meta_url":    parsedBody.Links.HTML,
+		"blurhash":    parsedBody.BlurHash,
 		"user": map[string]interface{}{
 			"name": parsedBody.User.Name,
 			"url":  parsedBody.User.Links.HTML,
@@ -90,6 +93,13 @@ var UnsplashImageObj = graphql.NewObject(graphql.ObjectConfig{
 			Type: graphql.String,
 		},
 		"url": &graphql.Field{
+			Type:              graphql.String,
+			DeprecationReason: "Please use url_full or url_regular instead",
+		},
+		"url_full": &graphql.Field{
+			Type: graphql.String,
+		},
+		"url_regular": &graphql.Field{
 			Type: graphql.String,
 		},
 		"user": &graphql.Field{
