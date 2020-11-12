@@ -18,7 +18,7 @@ type Connection struct {
 }
 
 type ConnectionOptions struct {
-	First *string `json:"first"`
+	First *int `json:"first"`
 }
 
 type PaginatedResolveFunc func(graphql.ResolveParams, ConnectionOptions) (interface{}, PageInfo, error)
@@ -30,6 +30,15 @@ type ConnectionObj struct {
 
 func (obj ConnectionObj) ResolveFunc(f PaginatedResolveFunc) graphql.FieldResolveFn {
 	return func(p graphql.ResolveParams) (interface{}, error) {
+		opts := ConnectionOptions{}
+
+		if first, ok := p.Args["first"].(int); ok {
+			opts.First = &first
+		}
+		_, _, err := f(p, opts)
+		if err != nil {
+			return nil, err
+		}
 		return nil, nil
 	}
 }
