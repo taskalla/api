@@ -92,7 +92,20 @@ func newEdgeObject(name string, wraps *graphql.Object) *graphql.Object {
 	})
 }
 
-func NewConnectionObject(name string, wraps *graphql.Object) *ConnectionObj {
+func NewConnectionObject(name string, wraps *graphql.Object, additionalArgs graphql.FieldConfigArgument) *ConnectionObj {
+	args := graphql.FieldConfigArgument{
+		"first": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.Int),
+		},
+		"after": &graphql.ArgumentConfig{
+			Type: graphql.String,
+		},
+	}
+
+	for a, b := range additionalArgs {
+		args[a] = b
+	}
+
 	return &ConnectionObj{
 		Object: graphql.NewObject(graphql.ObjectConfig{
 			Name: name,
@@ -108,13 +121,6 @@ func NewConnectionObject(name string, wraps *graphql.Object) *ConnectionObj {
 				},
 			},
 		}),
-		Args: graphql.FieldConfigArgument{
-			"first": &graphql.ArgumentConfig{
-				Type: graphql.NewNonNull(graphql.Int),
-			},
-			"after": &graphql.ArgumentConfig{
-				Type: graphql.String,
-			},
-		},
+		Args: args,
 	}
 }
