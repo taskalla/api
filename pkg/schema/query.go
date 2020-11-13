@@ -25,7 +25,6 @@ var RootQuery = graphql.NewObject(graphql.ObjectConfig{
 					return nil, errors.New("invalid auth")
 				}
 
-				// TODO
 				return db_user, nil
 			},
 		},
