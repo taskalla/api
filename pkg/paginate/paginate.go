@@ -7,7 +7,7 @@ import (
 )
 
 type Edge struct {
-	Cursor string `json:"cursor"`
+	Cursor interface{} `json:"cursor"`
 	Node   interface{}
 }
 
@@ -18,15 +18,15 @@ type PageInfo struct {
 type Connection struct {
 	Nodes    []interface{} `json:"nodes"`
 	Edges    []Edge        `json:"edges"`
-	PageInfo PageInfo      `json:"pageInfo"`
+	PageInfo *PageInfo     `json:"pageInfo"`
 }
 
 type ConnectionOptions struct {
-	First int    `json:"first"`
-	After string `json:"after"`
+	First int         `json:"first"`
+	After interface{} `json:"after"`
 }
 
-type PaginatedResolveFunc func(graphql.ResolveParams, ConnectionOptions) ([]Edge, PageInfo, error)
+type PaginatedResolveFunc func(graphql.ResolveParams, ConnectionOptions) ([]Edge, *PageInfo, error)
 
 type ConnectionObj struct {
 	Object *graphql.Object
@@ -53,7 +53,7 @@ func (obj ConnectionObj) ResolveFunc(f PaginatedResolveFunc) graphql.FieldResolv
 			return nil, errors.New("Please provide the `first` argument")
 		}
 
-		if after, ok := p.Args["after"].(string); ok {
+		if after, ok := p.Args["after"]; ok {
 			opts.After = after
 		}
 
@@ -78,12 +78,12 @@ var PageInfoObj = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-func newEdgeObject(name string, wraps *graphql.Object) *graphql.Object {
+func newEdgeObject(name string, wraps *graphql.Object, cursorType graphql.Output) *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: name,
 		Fields: graphql.Fields{
 			"cursor": &graphql.Field{
-				Type: graphql.NewNonNull(graphql.String),
+				Type: graphql.NewNonNull(cursorType),
 			},
 			"node": &graphql.Field{
 				Type: wraps,
@@ -92,13 +92,13 @@ func newEdgeObject(name string, wraps *graphql.Object) *graphql.Object {
 	})
 }
 
-func NewConnectionObject(name string, wraps *graphql.Object, additionalArgs graphql.FieldConfigArgument) *ConnectionObj {
+func NewConnectionObject(name string, wraps *graphql.Object, cursorType graphql.Output, additionalArgs graphql.FieldConfigArgument) *ConnectionObj {
 	args := graphql.FieldConfigArgument{
 		"first": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.Int),
 		},
 		"after": &graphql.ArgumentConfig{
-			Type: graphql.String,
+			Type: cursorType,
 		},
 	}
 
@@ -117,7 +117,7 @@ func NewConnectionObject(name string, wraps *graphql.Object, additionalArgs grap
 					Type: PageInfoObj,
 				},
 				"edges": &graphql.Field{
-					Type: graphql.NewList(newEdgeObject(name+"Edge", wraps)),
+					Type: graphql.NewList(newEdgeObject(name+"Edge", wraps, cursorType)),
 				},
 			},
 		}),
