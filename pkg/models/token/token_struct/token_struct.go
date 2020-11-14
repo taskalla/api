@@ -19,7 +19,7 @@ type Token struct {
 	Token      string    `graphql:"token"`
 	Scopes     []string  `graphql:"scopes"`
 	Valid      bool      `graphql:"valid"`
-	CreatedOn  time.Time `graphql:"created_on"`
+	CreatedAt  time.Time `graphql:"created_at"`
 	TokenType  string    `graphql:"type"`
 	UserID     string    `graphql:"user_id"`
 	ClientType string    `graphql:"client_type"`

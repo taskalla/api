@@ -11,11 +11,13 @@ import (
 
 func CreateClientToken(user, client_type string) (*token_struct.Token, error) {
 	id := utils.GenerateUUID()
-	createdOn := time.Now()
-
 	token := utils.GenerateToken()
 
-	_, err := db.DB.Exec(context.Background(), "INSERT INTO tokens (id, token, created_on, token_type, user_id, client_type) VALUES ($1, $2, $3, 'client', $4, $5)", id, token, createdOn, user, client_type)
+	row := db.DB.QueryRow(context.Background(), "INSERT INTO tokens (id, token, token_type, user_id, client_type) VALUES ($1, $2, 'client', $3, $4) RETURNING created_at", id, token, user, client_type)
+
+	var createdAt time.Time
+
+	err := row.Scan(&createdAt)
 	if err != nil {
 		return &token_struct.Token{}, err
 	}
@@ -25,7 +27,7 @@ func CreateClientToken(user, client_type string) (*token_struct.Token, error) {
 		UserID:     user,
 		TokenType:  token_struct.TokenTypeClient,
 		Valid:      true,
-		CreatedOn:  createdOn,
+		CreatedAt:  createdAt,
 		Token:      token,
 		ClientType: client_type,
 	}, nil

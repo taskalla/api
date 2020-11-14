@@ -1,14 +1,17 @@
 package item
 
 import (
+	"time"
+
 	"github.com/graphql-go/graphql"
 )
 
 type Item struct {
-	Description string `graphql:"description"`
-	ID          string `graphql:"id"`
-	UserID      string `graphql:"user_id"`
-	Done        bool   `graphql:"done"`
+	Description string    `graphql:"description"`
+	ID          string    `graphql:"id"`
+	UserID      string    `graphql:"user_id"`
+	Done        bool      `graphql:"done"`
+	CreatedAt   time.Time `graphql:"created_at"`
 }
 
 var ItemObj = graphql.NewObject(graphql.ObjectConfig{
@@ -24,6 +27,9 @@ var ItemObj = graphql.NewObject(graphql.ObjectConfig{
 		},
 		"done": &graphql.Field{
 			Type: graphql.NewNonNull(graphql.Boolean),
+		},
+		"created_at": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.DateTime),
 		},
 	},
 })

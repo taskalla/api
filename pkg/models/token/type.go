@@ -65,5 +65,8 @@ var TokenObj = graphql.NewObject(graphql.ObjectConfig{
 		"client_type": &graphql.Field{
 			Type: ClientType,
 		},
+		"created_at": &graphql.Field{
+			Type: graphql.DateTime,
+		},
 	},
 })

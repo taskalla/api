@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS items (
     id uuid PRIMARY KEY,
     item_description varchar NOT NULL,
     user_id uuid REFERENCES users (id) NOT NULL,
-    done boolean NOT NULL DEFAULT FALSE
+    done boolean NOT NULL DEFAULT FALSE,
+    created_at timestamp DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS oauth_apps (
@@ -38,7 +39,7 @@ CREATE TABLE IF NOT EXISTS tokens (
     token varchar NOT NULL UNIQUE,
     scopes varchar[],
     valid boolean DEFAULT TRUE,
-    created_on timestamp DEFAULT NOW(),
+    created_at timestamp DEFAULT NOW(),
     token_type token_type NOT NULL,
     user_id uuid REFERENCES users (id) NOT NULL,
     client_type client_type CHECK (

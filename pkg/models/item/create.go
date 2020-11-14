@@ -2,6 +2,7 @@ package item
 
 import (
 	"context"
+	"time"
 
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/db"
@@ -53,7 +54,12 @@ type CreateItemParams struct {
 
 func CreateItem(params *CreateItemParams) (*Item, error) {
 	id := utils.GenerateUUID()
-	_, err := db.DB.Exec(context.Background(), "INSERT INTO items (id, item_description, user_id) VALUES ($1, $2, $3)", id, params.Description, params.UserID)
+	row := db.DB.QueryRow(context.Background(), "INSERT INTO items (id, item_description, user_id) VALUES ($1, $2, $3) RETURNING created_at, done", id, params.Description, params.UserID)
+
+	var created_at time.Time
+	var done bool
+
+	err := row.Scan(&created_at, &done)
 	if err != nil {
 		return nil, err
 	}
@@ -62,5 +68,7 @@ func CreateItem(params *CreateItemParams) (*Item, error) {
 		Description: params.Description,
 		UserID:      params.UserID,
 		ID:          id,
+		CreatedAt:   created_at,
+		Done:        done,
 	}, nil
 }
