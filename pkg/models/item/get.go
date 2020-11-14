@@ -3,7 +3,9 @@ package item
 import (
 	"context"
 
+	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/db"
+	"github.com/taskalla/api/pkg/paginate"
 )
 
 func GetUserItems(user string, count, page int, filter ItemFilter) ([]*Item, error) {
@@ -27,28 +29,6 @@ func GetUserItems(user string, count, page int, filter ItemFilter) ([]*Item, err
 	return items, nil
 }
 
-func GetItemCountOnPage(user string, count, page int, filter ItemFilter) (int, error) {
-	row := db.DB.QueryRow(context.Background(), "SELECT COUNT(*) AS count FROM (SELECT id FROM items WHERE user_id = $1 AND done = coalesce($2, done) ORDER BY id ASC LIMIT $3 OFFSET $4) AS items", user, filter.Done, count, (page-1)*count)
-
-	var returned_count int
-
-	err := row.Scan(&returned_count)
-	if err != nil {
-		return 0, err
-	}
-
-	return returned_count, nil
-}
-
-func GetTotalItemCount(user string, filter ItemFilter) (int, error) {
-	row := db.DB.QueryRow(context.Background(), "SELECT COUNT(*) AS count FROM (SELECT id FROM items WHERE user_id = $1 AND done = coalesce($2, done)) AS items", user, filter.Done)
-
-	var returned_count int
-
-	err := row.Scan(&returned_count)
-	if err != nil {
-		return 0, err
-	}
-
-	return returned_count, nil
+func UserItemsResolver(p graphql.ResolveParams, o paginate.ConnectionOptions) ([]paginate.Edge, paginate.PageInfo, error) {
+	return nil, paginate.PageInfo{}, nil
 }

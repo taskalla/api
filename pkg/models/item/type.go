@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/graphql-go/graphql"
+	"github.com/taskalla/api/pkg/paginate"
 )
 
 type Item struct {
@@ -34,33 +35,8 @@ var ItemObj = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-type ItemsConnection struct {
-	Nodes      []Item `graphql:"nodes"`
-	Count      int    `graphql:"count"`
-	TotalCount int    `graphql:"total_count"`
-	FetchFunc  func() ([]*Item, error)
-}
-
-var ItemsConnectionObj = graphql.NewObject(graphql.ObjectConfig{
-	Name: "ItemsConnection",
-	Fields: graphql.Fields{
-		"nodes": &graphql.Field{
-			Type: graphql.NewNonNull(
-				graphql.NewList(ItemObj),
-			),
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				source := p.Source.(ItemsConnection)
-
-				return source.FetchFunc()
-			},
-		},
-		"count": &graphql.Field{
-			Type:        graphql.NewNonNull(graphql.Int),
-			Description: "The number of nodes on this page",
-		},
-		"total_count": &graphql.Field{
-			Type:        graphql.NewNonNull(graphql.Int),
-			Description: "The total number of items in the result set",
-		},
+var ItemConnectionObj = paginate.NewConnectionObject("ItemConnection", ItemObj, graphql.FieldConfigArgument{
+	"filter": &graphql.ArgumentConfig{
+		Type: ItemFilterObj,
 	},
 })
