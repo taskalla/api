@@ -56,7 +56,7 @@ func CreateUser(email, password, name string) (*User, error) {
 
 	return &User{
 		Email: email,
-		Name:  name,
+		Name:  &name,
 		ID:    id,
 	}, nil
 }

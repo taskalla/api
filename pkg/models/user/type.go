@@ -14,10 +14,10 @@ import (
 )
 
 type User struct {
-	Email        string `graphql:"email"`
-	PasswordHash string `graphql:"password_hash"`
-	ID           string `graphql:"id"`
-	Name         string `graphql:"name"`
+	Email        string  `graphql:"email"`
+	PasswordHash string  `graphql:"password_hash"`
+	ID           string  `graphql:"id"`
+	Name         *string `graphql:"name"`
 }
 
 var UserObj = graphql.NewObject(graphql.ObjectConfig{
