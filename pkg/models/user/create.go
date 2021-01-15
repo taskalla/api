@@ -47,7 +47,7 @@ func CreateUser(email, password string, name *string) (*models.User, error) {
 	passwordHash, err := utils.HashPassword(password)
 	if err != nil {
 		logging.Error(err)
-		return &models.User{}, err
+		return nil, err
 	}
 
 	user := models.User{
