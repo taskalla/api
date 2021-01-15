@@ -1,11 +1,10 @@
 package user
 
 import (
-	"context"
-
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/db"
 	"github.com/taskalla/api/pkg/logging"
+	"github.com/taskalla/api/pkg/models"
 	"github.com/taskalla/api/pkg/utils"
 )
 
@@ -19,7 +18,13 @@ var CreateUserMutation = &graphql.Field{
 	},
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 		input := p.Args["input"].(map[string]interface{})
-		return CreateUser(input["email"].(string), input["password"].(string), input["name"].(string))
+		input_name, ok := input["name"].(string)
+
+		var name *string = nil
+		if ok {
+			name = &input_name
+		}
+		return CreateUser(input["email"].(string), input["password"].(string), name)
 	},
 }
 
@@ -38,25 +43,29 @@ var CreateUserInput = graphql.NewInputObject(graphql.InputObjectConfig{
 	},
 })
 
-func CreateUser(email, password, name string) (*User, error) {
+func CreateUser(email, password string, name *string) (*models.User, error) {
 	passwordHash, err := utils.HashPassword(password)
 	if err != nil {
 		logging.Error(err)
-		return &User{}, err
+		return &models.User{}, err
 	}
 
-	id := utils.GenerateUUID()
-
-	_, err = db.DB.Exec(context.Background(), "INSERT INTO users (email, password_hash, name, id) VALUES ($1, $2, $3, $4)", email, passwordHash, name, id)
-
-	if err != nil {
-		logging.Error(err)
-		return &User{}, err
+	user := models.User{
+		Email:        email,
+		PasswordHash: passwordHash,
+		Name:         name,
 	}
 
-	return &User{
+	result := db.DB.Create(&user)
+
+	if result.Error != nil {
+		// logging.Error(result.Error)
+		return nil, result.Error
+	}
+
+	return &models.User{
+		ID:    user.ID,
 		Email: email,
-		Name:  &name,
-		ID:    id,
+		Name:  name,
 	}, nil
 }

@@ -1,33 +1,30 @@
 package user
 
 import (
-	"context"
-
 	"github.com/taskalla/api/pkg/db"
+	"github.com/taskalla/api/pkg/models"
 )
 
-func GetUserByEmail(email string) (*User, error) {
-	row := db.DB.QueryRow(context.Background(), "SELECT id, email, password_hash, name FROM users WHERE email = $1", email)
+func GetUserByEmail(email string) (*models.User, error) {
+	var user models.User
 
-	user := &User{}
-	err := row.Scan(&user.ID, &user.Email, &user.PasswordHash, &user.Name)
+	result := db.DB.Where("email = ?", email).First(&user)
 
-	if err != nil {
-		return &User{}, err
+	if result.Error != nil {
+		return &models.User{}, result.Error
 	}
 
-	return user, nil
+	return &user, nil
 }
 
-func GetUserById(id string) (*User, error) {
-	row := db.DB.QueryRow(context.Background(), "SELECT id, email, password_hash, name FROM users WHERE id = $1", id)
+func GetUserById(id string) (*models.User, error) {
+	var user models.User
 
-	user := &User{}
-	err := row.Scan(&user.ID, &user.Email, &user.PasswordHash, &user.Name)
+	result := db.DB.Where("id = ?", id).First(&user)
 
-	if err != nil {
-		return &User{}, err
+	if result.Error != nil {
+		return &models.User{}, result.Error
 	}
 
-	return user, nil
+	return &user, nil
 }

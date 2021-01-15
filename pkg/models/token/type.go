@@ -2,7 +2,7 @@ package token
 
 import (
 	"github.com/graphql-go/graphql"
-	"github.com/taskalla/api/pkg/models/token/token_struct"
+	"github.com/taskalla/api/pkg/models"
 	"github.com/taskalla/api/pkg/models/user"
 )
 
@@ -52,11 +52,11 @@ var TokenObj = graphql.NewObject(graphql.ObjectConfig{
 		"user": &graphql.Field{
 			Type: user.UserObj,
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				source := p.Source.(*token_struct.Token)
+				source := p.Source.(*models.Token)
 
 				db_user, err := user.GetUserById(source.UserID)
 				if err != nil {
-					return &user.User{}, err
+					return &models.User{}, err
 				}
 
 				return db_user, nil

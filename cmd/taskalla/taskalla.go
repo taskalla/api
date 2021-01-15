@@ -6,6 +6,7 @@ import (
 
 	"github.com/taskalla/api/pkg/db"
 	"github.com/taskalla/api/pkg/env"
+	"github.com/taskalla/api/pkg/models"
 	"github.com/taskalla/api/pkg/root_object"
 	"github.com/taskalla/api/pkg/schema"
 
@@ -25,6 +26,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 
 func main() {
 	db.Connect()
+	db.DB.AutoMigrate(&models.User{}, &models.Item{}, &models.Token{})
 
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
 		Query:    schema.RootQuery,

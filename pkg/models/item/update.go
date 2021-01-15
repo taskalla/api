@@ -1,11 +1,11 @@
 package item
 
 import (
-	"context"
 	"errors"
 
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/db"
+	"github.com/taskalla/api/pkg/models"
 	"github.com/taskalla/api/pkg/tokenutils"
 )
 
@@ -61,12 +61,21 @@ var UpdateItemMutationInput = graphql.NewInputObject(graphql.InputObjectConfig{
 })
 
 func UpdateItem(id, user_id string, description *string, done *bool) (string, error) {
-	info, err := db.DB.Exec(context.Background(), "UPDATE items SET item_description = coalesce($1, item_description), done = coalesce($2, done) WHERE id = $3 AND user_id = $4", description, done, id, user_id)
-	if err != nil {
-		return "", err
+	update := map[string]interface{}{}
+
+	if description != nil {
+		update["description"] = *description
+	}
+	if done != nil {
+		update["done"] = *done
 	}
 
-	if info.RowsAffected() == 0 {
+	result := db.DB.Model(&models.Item{}).Where("id = ? AND user_id = ?", id, user_id).Updates(update)
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	if result.RowsAffected == 0 {
 		return "", errors.New("Item not found")
 	}
 

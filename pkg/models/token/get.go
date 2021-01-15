@@ -1,19 +1,17 @@
 package token
 
 import (
-	"context"
-
 	"github.com/taskalla/api/pkg/db"
-	"github.com/taskalla/api/pkg/models/token/token_struct"
+	"github.com/taskalla/api/pkg/models"
 )
 
-func GetToken(t string) (*token_struct.Token, error) {
-	row := db.DB.QueryRow(context.Background(), "SELECT id, token, scopes, valid, created_at, token_type, user_id, client_type FROM tokens WHERE token = $1 AND valid IS TRUE", t)
-	token := &token_struct.Token{}
+func GetToken(t string) (*models.Token, error) {
 
-	err := row.Scan(&token.ID, &token.Token, &token.Scopes, &token.Valid, &token.CreatedAt, &token.TokenType, &token.UserID, &token.ClientType)
-	if err != nil {
-		return &token_struct.Token{}, err
+	token := &models.Token{}
+	result := db.DB.Where("token = ?", t).First(&token)
+
+	if result.Error != nil {
+		return &models.Token{}, result.Error
 	}
 
 	return token, nil

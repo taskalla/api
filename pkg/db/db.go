@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/Matt-Gleich/logoru"
 	"github.com/taskalla/api/pkg/logging"
@@ -26,7 +27,7 @@ func Connect() {
 		db_url.Hostname(),
 		db_url.User.Username(),
 		password,
-		db_url.Path,
+		strings.TrimPrefix(db_url.Path, "/"),
 		db_url.Port(),
 	)
 
