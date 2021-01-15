@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/taskalla/api/pkg/utils"
 	"gorm.io/gorm"
 )
 
@@ -11,4 +12,10 @@ type Item struct {
 	UserID      string
 	User        User
 	Done        bool `gorm:"default:false;not null"`
+}
+
+func (t *Item) BeforeCreate(tx *gorm.DB) (err error) {
+	t.ID = utils.GenerateUUID()
+
+	return
 }

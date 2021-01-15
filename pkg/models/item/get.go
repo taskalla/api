@@ -59,10 +59,10 @@ func UserItemsResolver(p graphql.ResolveParams, o paginate.ConnectionOptions) ([
 		})
 	}
 
-	edges := all_edges
-	if len(edges) != 0 && len(all_edges) > o.First {
-		edges = all_edges[:len(all_edges)-1]
-	}
+	/* edges := all_edges
+	 * if len(edges) != 0 && len(all_edges) > o.First {
+	 *   edges = all_edges[:len(all_edges)-1]
+	 * } */
 
-	return edges, &paginate.PageInfo{HasNextPage: len(all_edges) > o.First}, nil
+	return all_edges, &paginate.PageInfo{HasNextPage: len(all_edges) > o.First}, nil
 }

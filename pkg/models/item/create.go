@@ -58,7 +58,7 @@ func CreateItem(params *CreateItemParams) (*models.Item, error) {
 	result := db.DB.Create(&item)
 
 	if result.Error != nil {
-		return &models.Item{}, result.Error
+		return nil, result.Error
 	}
 
 	return &item, nil

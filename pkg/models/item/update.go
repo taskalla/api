@@ -10,7 +10,7 @@ import (
 )
 
 var UpdateItemMutation = &graphql.Field{
-	Type: graphql.NewNonNull(graphql.String),
+	Type: graphql.NewNonNull(ItemObj),
 	Args: graphql.FieldConfigArgument{
 		"input": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(UpdateItemMutationInput),
@@ -60,7 +60,7 @@ var UpdateItemMutationInput = graphql.NewInputObject(graphql.InputObjectConfig{
 	},
 })
 
-func UpdateItem(id, user_id string, description *string, done *bool) (string, error) {
+func UpdateItem(id, user_id string, description *string, done *bool) (*models.Item, error) {
 	update := map[string]interface{}{}
 
 	if description != nil {
@@ -70,14 +70,16 @@ func UpdateItem(id, user_id string, description *string, done *bool) (string, er
 		update["done"] = *done
 	}
 
-	result := db.DB.Model(&models.Item{}).Where("id = ? AND user_id = ?", id, user_id).Updates(update)
+	item := &models.Item{}
+
+	result := db.DB.Model(&item).Where("id = ? AND user_id = ?", id, user_id).Updates(update)
 	if result.Error != nil {
-		return "", result.Error
+		return nil, result.Error
 	}
 
 	if result.RowsAffected == 0 {
-		return "", errors.New("Item not found")
+		return nil, errors.New("Item not found")
 	}
 
-	return id, nil
+	return item, nil
 }

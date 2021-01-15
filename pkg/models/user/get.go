@@ -11,7 +11,7 @@ func GetUserByEmail(email string) (*models.User, error) {
 	result := db.DB.Where("email = ?", email).First(&user)
 
 	if result.Error != nil {
-		return &models.User{}, result.Error
+		return nil, result.Error
 	}
 
 	return &user, nil
@@ -23,7 +23,7 @@ func GetUserById(id string) (*models.User, error) {
 	result := db.DB.Where("id = ?", id).First(&user)
 
 	if result.Error != nil {
-		return &models.User{}, result.Error
+		return nil, result.Error
 	}
 
 	return &user, nil

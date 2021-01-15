@@ -18,7 +18,7 @@ func CreateClientToken(user, description string) (*models.Token, error) {
 	result := db.DB.Create(&token)
 
 	if result.Error != nil {
-		return &models.Token{}, result.Error
+		return nil, result.Error
 	}
 
 	return &token, nil

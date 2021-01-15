@@ -11,7 +11,7 @@ func GetToken(t string) (*models.Token, error) {
 	result := db.DB.Where("token = ?", t).First(&token)
 
 	if result.Error != nil {
-		return &models.Token{}, result.Error
+		return nil, result.Error
 	}
 
 	return token, nil

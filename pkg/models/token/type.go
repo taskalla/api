@@ -62,7 +62,7 @@ var TokenObj = graphql.NewObject(graphql.ObjectConfig{
 				return db_user, nil
 			},
 		},
-		"client_type": &graphql.Field{
+		"description": &graphql.Field{
 			Type: ClientType,
 		},
 		"created_at": &graphql.Field{
