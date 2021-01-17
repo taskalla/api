@@ -25,7 +25,7 @@ var ItemObj = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-var ItemConnectionObj = paginate.NewConnectionObject("ItemConnection", ItemObj, graphql.Int, graphql.FieldConfigArgument{
+var ItemConnectionObj = paginate.NewConnectionObject("ItemConnection", ItemObj, graphql.String, graphql.FieldConfigArgument{
 	"filter": &graphql.ArgumentConfig{
 		Type: ItemFilterObj,
 	},

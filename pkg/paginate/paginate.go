@@ -2,8 +2,10 @@ package paginate
 
 import (
 	"errors"
+	"reflect"
 
 	"github.com/graphql-go/graphql"
+	"github.com/taskalla/api/pkg/logging"
 )
 
 type Edge struct {
@@ -27,6 +29,7 @@ type ConnectionOptions struct {
 }
 
 type PaginatedResolveFunc func(graphql.ResolveParams, ConnectionOptions) ([]Edge, *PageInfo, error)
+type SimplePaginatedResolveFunc func(graphql.ResolveParams) (interface{}, error)
 
 type ConnectionObj struct {
 	Object *graphql.Object
@@ -43,18 +46,27 @@ func edgesToNodes(edges []Edge) []interface{} {
 	return nodes
 }
 
+func GetConnectionOptions(p graphql.ResolveParams) (ConnectionOptions, error) {
+	opts := ConnectionOptions{}
+
+	if first, ok := p.Args["first"].(int); ok {
+		opts.First = first
+	} else {
+		return ConnectionOptions{}, errors.New("Please provide the `first` argument")
+	}
+
+	if after, ok := p.Args["after"]; ok {
+		opts.After = after
+	}
+
+	return opts, nil
+}
+
 func (obj ConnectionObj) ResolveFunc(f PaginatedResolveFunc) graphql.FieldResolveFn {
 	return func(p graphql.ResolveParams) (interface{}, error) {
-		opts := ConnectionOptions{}
-
-		if first, ok := p.Args["first"].(int); ok {
-			opts.First = first
-		} else {
-			return nil, errors.New("Please provide the `first` argument")
-		}
-
-		if after, ok := p.Args["after"]; ok {
-			opts.After = after
+		opts, err := GetConnectionOptions(p)
+		if err != nil {
+			return nil, err
 		}
 
 		edges, pageInfo, err := f(p, opts)
@@ -65,6 +77,40 @@ func (obj ConnectionObj) ResolveFunc(f PaginatedResolveFunc) graphql.FieldResolv
 			Edges:    edges,
 			PageInfo: pageInfo,
 			Nodes:    edgesToNodes(edges),
+		}, nil
+	}
+}
+
+func (obj ConnectionObj) SimpleResolveFunc(f SimplePaginatedResolveFunc) graphql.FieldResolveFn {
+	return func(p graphql.ResolveParams) (interface{}, error) {
+		opts, err := GetConnectionOptions(p)
+		if err != nil {
+			return nil, err
+		}
+
+		logging.Info(opts)
+
+		nodes_interface, err := f(p)
+		if err != nil {
+			return nil, err
+		}
+
+		nodes_value := reflect.ValueOf(nodes_interface)
+
+		if nodes_value.Kind() != reflect.Slice {
+			return nil, errors.New("Value is not a slice")
+		}
+
+		nodes := make([]interface{}, nodes_value.Len())
+
+		for i := 0; i < nodes_value.Len(); i++ {
+			nodes[i] = nodes_value.Index(i).Interface()
+		}
+
+		return Connection{
+			Nodes:    nodes,
+			Edges:    []Edge{},
+			PageInfo: &PageInfo{},
 		}, nil
 	}
 }

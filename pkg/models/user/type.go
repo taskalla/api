@@ -29,7 +29,7 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 		"items": &graphql.Field{
 			Type:    graphql.NewNonNull(item.ItemConnectionObj.Object),
 			Args:    item.ItemConnectionObj.Args,
-			Resolve: item.ItemConnectionObj.ResolveFunc(item.UserItemsResolver),
+			Resolve: item.ItemConnectionObj.SimpleResolveFunc(item.UserItemsResolver),
 		},
 		"gravatar": &graphql.Field{
 			Args: graphql.FieldConfigArgument{

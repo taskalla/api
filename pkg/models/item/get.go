@@ -1,35 +1,25 @@
 package item
 
 import (
-	"fmt"
-
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/db"
 	"github.com/taskalla/api/pkg/models"
-	"github.com/taskalla/api/pkg/paginate"
 	"github.com/taskalla/api/pkg/tokenutils"
 )
 
-func UserItemsResolver(p graphql.ResolveParams, o paginate.ConnectionOptions) ([]paginate.Edge, *paginate.PageInfo, error) {
+func UserItemsResolver(p graphql.ResolveParams) (interface{}, error) {
 	t, err := tokenutils.ExtractToken(p)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	var after *int
-	if a, ok := o.After.(int); ok {
-		after = &a
-	}
-
-	fmt.Println(after)
-
-	filter_struct := ItemFilter{}
-	if filter_map, ok := p.Args["filter"].(map[string]interface{}); ok {
-		// There's a filter object
-		if filter_done, ok := filter_map["done"].(bool); ok {
-			filter_struct.Done = &filter_done
-		}
-	}
+	/* filter_struct := ItemFilter{}
+	 * if filter_map, ok := p.Args["filter"].(map[string]interface{}); ok {
+	 *   // There's a filter object
+	 *   if filter_done, ok := filter_map["done"].(bool); ok {
+	 *     filter_struct.Done = &filter_done
+	 *   }
+	 * } */
 
 	/* rows, err := db.DB.Query(context.Background(), `
 	 *   WITH items AS (
@@ -47,22 +37,8 @@ func UserItemsResolver(p graphql.ResolveParams, o paginate.ConnectionOptions) ([
 	items := []models.Item{}
 	result := db.DB.Where("user_id = ?", t.UserID).Find(&items)
 	if result.Error != nil {
-		return nil, nil, result.Error
+		return nil, result.Error
 	}
 
-	all_edges := []paginate.Edge{}
-
-	for _, item := range items {
-		all_edges = append(all_edges, paginate.Edge{
-			Cursor: 6,
-			Node:   item,
-		})
-	}
-
-	/* edges := all_edges
-	 * if len(edges) != 0 && len(all_edges) > o.First {
-	 *   edges = all_edges[:len(all_edges)-1]
-	 * } */
-
-	return all_edges, &paginate.PageInfo{HasNextPage: len(all_edges) > o.First}, nil
+	return items, nil
 }
