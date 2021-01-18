@@ -36,5 +36,9 @@ func DeserializeCursor(cursor string) (int, error) {
 		return 0, errors.New("Invalid cursor")
 	}
 
+	if index < 0 {
+		return 0, errors.New("Invalid cursor")
+	}
+
 	return index, nil
 }
