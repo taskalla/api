@@ -14,12 +14,12 @@ services:
       PORT: "3000"
       DB: "postgres://postgres:password@db:5432/taskalla"
     env_file: .env
+    depends_on:
+      - db
   db:
     image: postgres
     volumes:
       - "db_volume:/var/lib/postgresql/data"
-      - "./sql/init.sql:/docker-entrypoint-initdb.d/init.sql"
-      - "./sql/mock.sql:/docker-entrypoint-initdb.d/mock.sql"
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: taskalla

@@ -10,15 +10,9 @@ import (
 
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/logging"
+	"github.com/taskalla/api/pkg/models"
 	"github.com/taskalla/api/pkg/models/item"
 )
-
-type User struct {
-	Email        string  `graphql:"email"`
-	PasswordHash string  `graphql:"password_hash"`
-	ID           string  `graphql:"id"`
-	Name         *string `graphql:"name"`
-}
 
 var UserObj = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
@@ -35,7 +29,7 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 		"items": &graphql.Field{
 			Type:    graphql.NewNonNull(item.ItemConnectionObj.Object),
 			Args:    item.ItemConnectionObj.Args,
-			Resolve: item.ItemConnectionObj.ResolveFunc(item.UserItemsResolver),
+			Resolve: item.ItemConnectionObj.SimpleResolveFunc(item.UserItemsResolver),
 		},
 		"gravatar": &graphql.Field{
 			Args: graphql.FieldConfigArgument{
@@ -46,7 +40,7 @@ var UserObj = graphql.NewObject(graphql.ObjectConfig{
 			},
 			Type: graphql.NewNonNull(graphql.String),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				if user, ok := p.Source.(*User); ok {
+				if user, ok := p.Source.(*models.User); ok {
 					hashed_email := md5.Sum([]byte(strings.ToLower(user.Email)))
 					size := p.Args["size"].(int)
 

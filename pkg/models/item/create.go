@@ -1,13 +1,10 @@
 package item
 
 import (
-	"context"
-	"time"
-
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/db"
+	"github.com/taskalla/api/pkg/models"
 	"github.com/taskalla/api/pkg/tokenutils"
-	"github.com/taskalla/api/pkg/utils"
 )
 
 var CreateItemMutation = &graphql.Field{
@@ -52,23 +49,17 @@ type CreateItemParams struct {
 	Description string
 }
 
-func CreateItem(params *CreateItemParams) (*Item, error) {
-	id := utils.GenerateUUID()
-	row := db.DB.QueryRow(context.Background(), "INSERT INTO items (id, item_description, user_id) VALUES ($1, $2, $3) RETURNING created_at, done", id, params.Description, params.UserID)
-
-	var created_at time.Time
-	var done bool
-
-	err := row.Scan(&created_at, &done)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Item{
+func CreateItem(params *CreateItemParams) (*models.Item, error) {
+	item := models.Item{
 		Description: params.Description,
 		UserID:      params.UserID,
-		ID:          id,
-		CreatedAt:   created_at,
-		Done:        done,
-	}, nil
+	}
+
+	result := db.DB.Create(&item)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &item, nil
 }

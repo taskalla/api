@@ -1,16 +1,16 @@
 package item
 
 import (
-	"context"
 	"errors"
 
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/db"
+	"github.com/taskalla/api/pkg/models"
 	"github.com/taskalla/api/pkg/tokenutils"
 )
 
 var UpdateItemMutation = &graphql.Field{
-	Type: graphql.NewNonNull(graphql.String),
+	Type: graphql.NewNonNull(ItemObj),
 	Args: graphql.FieldConfigArgument{
 		"input": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(UpdateItemMutationInput),
@@ -60,15 +60,26 @@ var UpdateItemMutationInput = graphql.NewInputObject(graphql.InputObjectConfig{
 	},
 })
 
-func UpdateItem(id, user_id string, description *string, done *bool) (string, error) {
-	info, err := db.DB.Exec(context.Background(), "UPDATE items SET item_description = coalesce($1, item_description), done = coalesce($2, done) WHERE id = $3 AND user_id = $4", description, done, id, user_id)
-	if err != nil {
-		return "", err
+func UpdateItem(id, user_id string, description *string, done *bool) (*models.Item, error) {
+	update := map[string]interface{}{}
+
+	if description != nil {
+		update["description"] = *description
+	}
+	if done != nil {
+		update["done"] = *done
 	}
 
-	if info.RowsAffected() == 0 {
-		return "", errors.New("Item not found")
+	item := &models.Item{}
+
+	result := db.DB.Model(&item).Where("id = ? AND user_id = ?", id, user_id).Updates(update)
+	if result.Error != nil {
+		return nil, result.Error
 	}
 
-	return id, nil
+	if result.RowsAffected == 0 {
+		return nil, errors.New("Item not found")
+	}
+
+	return item, nil
 }
