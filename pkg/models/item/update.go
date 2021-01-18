@@ -1,8 +1,6 @@
 package item
 
 import (
-	"errors"
-
 	"github.com/graphql-go/graphql"
 	"github.com/taskalla/api/pkg/db"
 	"github.com/taskalla/api/pkg/models"
@@ -24,24 +22,26 @@ var UpdateItemMutation = &graphql.Field{
 
 		input := p.Args["input"].(map[string]interface{})
 
-		var (
-			description *string
-			done        *bool
-		)
+		item := models.Item{}
+		result := db.DB.First(&item, "id = ? AND user_id = ?", input["id"].(string), t.UserID)
+		if result.Error != nil {
+			return nil, result.Error
+		}
 
 		if input_description, ok := input["description"].(string); ok {
-			description = &input_description
+			item.Description = input_description
 		}
+
 		if input_done, ok := input["done"].(bool); ok {
-			done = &input_done
+			item.Done = input_done
 		}
 
-		new_item, err := UpdateItem(input["id"].(string), t.UserID, description, done)
-		if err != nil {
-			return nil, err
+		result = db.DB.Save(&item)
+		if result.Error != nil {
+			return nil, result.Error
 		}
 
-		return new_item, nil
+		return item, nil
 	},
 }
 
@@ -59,27 +59,3 @@ var UpdateItemMutationInput = graphql.NewInputObject(graphql.InputObjectConfig{
 		},
 	},
 })
-
-func UpdateItem(id, user_id string, description *string, done *bool) (*models.Item, error) {
-	update := map[string]interface{}{}
-
-	if description != nil {
-		update["description"] = *description
-	}
-	if done != nil {
-		update["done"] = *done
-	}
-
-	item := &models.Item{}
-
-	result := db.DB.Model(&item).Where("id = ? AND user_id = ?", id, user_id).Updates(update)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	if result.RowsAffected == 0 {
-		return nil, errors.New("Item not found")
-	}
-
-	return item, nil
-}
