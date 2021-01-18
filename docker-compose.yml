@@ -20,8 +20,6 @@ services:
     image: postgres
     volumes:
       - "db_volume:/var/lib/postgresql/data"
-      # - "./sql/init.sql:/docker-entrypoint-initdb.d/init.sql"
-      # - "./sql/mock.sql:/docker-entrypoint-initdb.d/mock.sql"
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: taskalla
