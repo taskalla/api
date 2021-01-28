@@ -19,7 +19,7 @@ var ItemObj = graphql.NewObject(graphql.ObjectConfig{
 		"done": &graphql.Field{
 			Type: graphql.NewNonNull(graphql.Boolean),
 		},
-		"createdat": &graphql.Field{
+		"created_at": &graphql.Field{
 			Type: graphql.NewNonNull(graphql.DateTime),
 		},
 	},
