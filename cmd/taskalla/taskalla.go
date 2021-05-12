@@ -44,7 +44,7 @@ func main() {
 		RootObjectFn: root_object.ResolveRootObject,
 	})
 
-	http.Handle("/graphql", corsMiddleware(h))
+	http.Handle("/", corsMiddleware(h))
 
 	logging.Info("Starting up...")
 

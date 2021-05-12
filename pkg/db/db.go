@@ -40,11 +40,4 @@ func Connect() {
 		DB = db
 		logoru.Success("Successful database connection!")
 	}
-
-	// OLD STUFF BELOW ↓
-	//
-	// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) defer cancel() conn, err := pgxpool.Connect(ctx, os.Getenv("DB")) if err != nil { logging.Critical("Error connecting to database: " + err.Error()) } else {
-	// 	logoru.Success("Successful database connection!")
-	// 	DB = conn
-	// }
 }

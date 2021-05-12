@@ -10,13 +10,7 @@ import (
 )
 
 func SerializeCursor(index int) string {
-	builder := strings.Builder{}
-
-	enc := base64.NewEncoder(base64.StdEncoding, &builder)
-	enc.Write([]byte(fmt.Sprintf("cursor:%d", index)))
-	enc.Close()
-
-	return builder.String()
+	return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("cursor:%d", index)))
 }
 
 func DeserializeCursor(cursor string) (int, error) {

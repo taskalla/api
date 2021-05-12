@@ -6,7 +6,6 @@ import (
 )
 
 func GetToken(t string) (*models.Token, error) {
-
 	token := &models.Token{}
 	result := db.DB.Where("token = ?", t).First(&token)
 
